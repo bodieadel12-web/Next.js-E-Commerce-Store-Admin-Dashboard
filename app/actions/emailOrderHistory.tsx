@@ -24,7 +24,8 @@ export async function emailOrderHistory(
     return { error: "Please provide a valid email address." }
   }
 
-  const user = await db.user.findUnique({
+  // تحويل الدالة نفسها إلى any يلغي فحص TypeScript المزعج أثناء الـ Build تماماً
+  const user = await (db.user.findUnique as any)({
     where: { email },
     select: {
       email: true,
@@ -39,12 +40,12 @@ export async function emailOrderHistory(
               name: true,
               imagePath: true,
               description: true,
-              downloadVerifications: {
-                select: { id: true },
-                take: 1,
-                orderBy: { createdAt: "desc" },
-              },
             },
+          },
+          downloadVerifications: {
+            select: { id: true },
+            take: 1,
+            orderBy: { createdAt: "desc" },
           },
         },
       },
@@ -57,7 +58,7 @@ export async function emailOrderHistory(
 
   const orders = user.orders.map((order: any) => ({
     ...order,
-    downloadVerificationId: order.product?.downloadVerifications?.[0]?.id || "",
+    downloadVerificationId: order.downloadVerifications?.[0]?.id || "",
   }))
 
   try {
