@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import db from "@/app/admin/dp/dp"
 import { NextRequest, NextResponse } from "next/server"
 import Stripe from "stripe"
@@ -7,8 +8,6 @@ import { revalidatePath } from "next/cache"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 const resend = new Resend(process.env.RESEND_API_KEY as string)
-
-export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
