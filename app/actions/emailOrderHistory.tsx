@@ -24,8 +24,7 @@ export async function emailOrderHistory(
     return { error: "Please provide a valid email address." }
   }
 
-  // تحويل الدالة نفسها إلى any يلغي فحص TypeScript المزعج أثناء الـ Build تماماً
-  const user = await (db.user.findUnique as any)({
+  const user = await db.user.findUnique({
     where: { email },
     select: {
       email: true,
@@ -42,11 +41,6 @@ export async function emailOrderHistory(
               description: true,
             },
           },
-          downloadVerifications: {
-            select: { id: true },
-            take: 1,
-            orderBy: { createdAt: "desc" },
-          },
         },
       },
     },
@@ -56,10 +50,20 @@ export async function emailOrderHistory(
     return { message: "Check your email for your order history." }
   }
 
-  const orders = user.orders.map((order: any) => ({
-    ...order,
-    downloadVerificationId: order.downloadVerifications?.[0]?.id || "",
-  }))
+  const orders = await Promise.all(
+    user.orders.map(async (order) => {
+      const downloadVerification = await db.downloadVerification.findFirst({
+        where: { productId: order.productId },
+        orderBy: { createdAt: "desc" },
+        select: { id: true },
+      })
+
+      return {
+        ...order,
+        downloadVerificationId: downloadVerification?.id || "",
+      }
+    })
+  )
 
   try {
     const { error } = await resend.emails.send({
