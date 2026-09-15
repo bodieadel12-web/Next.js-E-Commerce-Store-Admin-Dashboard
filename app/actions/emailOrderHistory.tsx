@@ -45,8 +45,8 @@ export async function emailOrderHistory(
             select: { id: true },
             take: 1,
             orderBy: { createdAt: "desc" },
-          } as any,
-        },
+          },
+        } as any,
       },
     },
   })
