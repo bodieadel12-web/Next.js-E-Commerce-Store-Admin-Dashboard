@@ -1,5 +1,4 @@
 import db from "@/app/admin/dp/dp"
-import fs from "fs/promises"
 import { NextRequest, NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
@@ -33,15 +32,19 @@ export async function GET(
     )
   }
 
-  const { size } = await fs.stat(data.product.filePath)
-  const file = await fs.readFile(data.product.filePath)
-  const extension = data.product.filePath.split(".").pop()
+  // Fetch the file from Vercel Blob URL
+  const fileResponse = await fetch(data.product.filePath)
 
-  return new NextResponse(file, {
+  if (!fileResponse.ok || !fileResponse.body) {
+    return new NextResponse("File not found on storage", { status: 404 })
+  }
+
+  const extension = data.product.filePath.split(".").pop() || "bin"
+
+  return new NextResponse(fileResponse.body, {
     headers: {
       "Content-Disposition": `attachment; filename="${encodeURIComponent(data.product.name)}.${extension}"`,
-      "Content-Type": "application/octet-stream",
-      "Content-Length": size.toString(),
+      "Content-Type": fileResponse.headers.get("Content-Type") || "application/octet-stream",
       "Cache-Control": "no-store, max-age=0",
     },
   })
