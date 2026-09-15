@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use server"
 import db from "@/app/admin/dp/dp"
 import { Resend } from "resend"
@@ -46,7 +45,7 @@ export async function emailOrderHistory(
             select: { id: true },
             take: 1,
             orderBy: { createdAt: "desc" },
-          },
+          } as any,
         },
       },
     },
