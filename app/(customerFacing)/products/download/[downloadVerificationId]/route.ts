@@ -20,7 +20,6 @@ export async function GET(
       product: {
         select: {
           filePath: true,
-          name: true,
         },
       },
     },
@@ -32,20 +31,5 @@ export async function GET(
     )
   }
 
-  // Fetch the file from Vercel Blob URL
-  const fileResponse = await fetch(data.product.filePath)
-
-  if (!fileResponse.ok || !fileResponse.body) {
-    return new NextResponse("File not found on storage", { status: 404 })
-  }
-
-  const extension = data.product.filePath.split(".").pop() || "bin"
-
-  return new NextResponse(fileResponse.body, {
-    headers: {
-      "Content-Disposition": `attachment; filename="${encodeURIComponent(data.product.name)}.${extension}"`,
-      "Content-Type": fileResponse.headers.get("Content-Type") || "application/octet-stream",
-      "Cache-Control": "no-store, max-age=0",
-    },
-  })
+  return NextResponse.redirect(data.product.filePath)
 }
