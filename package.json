@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
-    "email": "node -e \"const fs = require('fs'); if (fs.existsSync('.env.local')) fs.copyFileSync('.env.local', './node_modules/react-email/.env.local');\" && npx react-email dev --dir email --port 3001"  },
+    "email": "node -e \"const fs = require('fs'); if (fs.existsSync('.env.local')) fs.copyFileSync('.env.local', './node_modules/react-email/.env.local');\" && npx react-email dev --dir email --port 3001"
+  },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
     "@prisma/client": "^6.19.3",
