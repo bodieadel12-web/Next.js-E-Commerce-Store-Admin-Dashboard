@@ -56,7 +56,7 @@ export default async function SuccessPage({
         <div className="p-5 sm:p-6 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800 flex flex-col sm:flex-row items-center gap-5 text-left">
           <div className="relative aspect-video sm:aspect-square w-full sm:w-32 rounded-xl overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 shadow-sm">
             <Image
-              src={product.imagePath.startsWith("/") ? product.imagePath : `/${product.imagePath}`}
+              src={product.imagePath.startsWith("http") || product.imagePath.startsWith("/") ? product.imagePath : `/${product.imagePath}`}
               alt={product.name}
               fill
               className="object-cover"
