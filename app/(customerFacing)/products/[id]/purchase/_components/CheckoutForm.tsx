@@ -29,7 +29,7 @@ export function CheckoutForm({
   product,
   clientSecret,
 }: CheckoutFormProps) {
-  const imageSrc = product.imagePath.startsWith("/")
+  const imageSrc = product.imagePath.startsWith("http") || product.imagePath.startsWith("/")
     ? product.imagePath
     : `/${product.imagePath}`
 
