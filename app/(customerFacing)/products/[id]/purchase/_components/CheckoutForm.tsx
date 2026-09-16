@@ -29,9 +29,12 @@ export function CheckoutForm({
   product,
   clientSecret,
 }: CheckoutFormProps) {
-  const imageSrc = product.imagePath.startsWith("http") || product.imagePath.startsWith("/")
-    ? product.imagePath
-    : `/${product.imagePath}`
+  let imageSrc = product.imagePath
+  if (imageSrc.startsWith("/http")) {
+    imageSrc = imageSrc.substring(1)
+  } else if (!imageSrc.startsWith("http") && !imageSrc.startsWith("/")) {
+    imageSrc = `/${imageSrc}`
+  }
 
   const options = useMemo(
     () => ({
